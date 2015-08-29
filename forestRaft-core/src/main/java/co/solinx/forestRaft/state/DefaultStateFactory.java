@@ -1,6 +1,7 @@
 package co.solinx.forestRaft.state;
 
 import co.solinx.forestRaft.Raft;
+import co.solinx.forestRaft.RaftClient;
 import co.solinx.forestRaft.log.RaftLog;
 
 /**
@@ -14,7 +15,7 @@ public class DefaultStateFactory implements StateFactory{
         this.log=log;
     }
 
-    public State makeState(Raft.StateType stateType) {
+    public State makeState(Raft.StateType stateType,RaftClient client) {
         State state = null;
         switch(stateType){
             case START:
@@ -27,7 +28,7 @@ public class DefaultStateFactory implements StateFactory{
                 state=new Leader();
                 break;
             case CANDIDATE:
-                state=new Candidate();
+                state=new Candidate(log,client);
                 break;
         }
         return state;
