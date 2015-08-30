@@ -25,15 +25,23 @@ public class RaftServer {
             InetSocketAddress inet = new InetSocketAddress(address, port);
             server = new ServerSocket();
             server.bind(inet);
+
             while (true) {
                 Socket socket = server.accept();
 
                 DataInputStream inputStream=new DataInputStream(socket.getInputStream());
                 DataOutputStream output=new DataOutputStream(socket.getOutputStream());
-                logger.info(name+" current state "+inputStream.readUTF());
-                output.writeUTF("follower");
-                inputStream.close();
-                socket.close();
+                byte flag=inputStream.readByte();
+                System.out.println("receive flag " + flag + " " + socket.getRemoteSocketAddress());
+                if(flag==0) {
+                    logger.info(" host {}  {}  current state {}",socket.getRemoteSocketAddress(),name,inputStream.readUTF());
+                    output.writeUTF("follower");
+                }else if(flag==1){
+                    logger.info("current server {} receive vote {} request  term {} ",name,socket.getRemoteSocketAddress(),inputStream.readUTF());
+                    output.writeUTF("Ok");
+                }
+//                inputStream.close();
+//                socket.close();
             }
 
         } catch (IOException e) {

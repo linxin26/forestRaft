@@ -34,8 +34,12 @@ public class Candidate implements State{
         DeadlineTimer timer=new DeadlineTimer(Raft.StateType.CANDIDATE);
 
         timer.start(() -> {
-            log.newTerm();
-            client.voteRequest(log);
+            try {
+                log.newTerm();
+                client.voteRequest(log);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         });
 
     }

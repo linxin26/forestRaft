@@ -3,6 +3,7 @@ package co.solinx.forestRaft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +31,7 @@ public class DeadlineTimer {
     }
 
     public void start(Runnable runnable){
-        scheduler.scheduleAtFixedRate(runnable,2000,2000,TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(runnable,2000,10000+new Random().nextInt(2000),TimeUnit.MILLISECONDS);
     }
 
     public void cancel(){
