@@ -1,5 +1,7 @@
 package co.solinx.forestRaft.netty;
 
+import co.solinx.forestRaft.Raft;
+import co.solinx.forestRaft.RaftContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -20,6 +22,12 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
         }else if(msg.toString().split(",")[0].equals("1")){
             ctx.writeAndFlush("Ok"+msg.toString().split(",")[1]);
+        }else if(msg.toString().split(",")[0].equals("2")){
+            if(RaftContext.getStateType()== Raft.StateType.LEADER) {
+                ctx.writeAndFlush("leader,1");
+            }else{
+                ctx.writeAndFlush("leader,0");
+            }
         }
     }
 

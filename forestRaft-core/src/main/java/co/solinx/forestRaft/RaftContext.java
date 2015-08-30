@@ -15,7 +15,7 @@ public class RaftContext implements Raft{
 
     private RaftLog log=new RaftLog();
     private State state;
-    private StateType stateType;
+    private static StateType stateType;
     private String name;
    private  StateFactory stateFactory;
     private Set<StateTransitionListener> listeners=new ConcurrentSkipListSet<>();
@@ -43,5 +43,9 @@ public class RaftContext implements Raft{
 
     public String getName() {
         return name;
+    }
+
+    public static StateType getStateType(){
+        return stateType;
     }
 }

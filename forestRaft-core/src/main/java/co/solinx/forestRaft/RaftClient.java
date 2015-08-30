@@ -1,6 +1,7 @@
 package co.solinx.forestRaft;
 
 import co.solinx.forestRaft.log.RaftLog;
+import co.solinx.forestRaft.netty.ClientHandler;
 import co.solinx.forestRaft.netty.NettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,14 @@ public class RaftClient {
 //            logger.info("current server {}  remote {}  vote result {}", name, socket[i].getRemoteSocketAddress(), input[i].readUTF());
 //            input[i].close();
 //            output[i].close();
+            }
+        }
+    }
+
+    public void getState(){
+        for (int i = 0; i <client.length; i++) {
+            if(client[i]!=null){
+                client[i].send("2,2");
             }
         }
     }

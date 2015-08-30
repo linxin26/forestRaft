@@ -45,9 +45,7 @@ public class Follower implements State{
     }
     public void startServer(){
 
-        Thread thread=new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread thread=new Thread(()-> {
                 logger.info("startServer");
                 String serverAdd= cxt.getServers()[0];
                 String add=serverAdd.toString().split(":")[0];
@@ -55,7 +53,6 @@ public class Follower implements State{
                 NettyServer server =new NettyServer();
                 server.open(add,port);
 //                RaftServer server=new RaftServer(cxt.getName(),port,add);
-            }
         });
         thread.start();
     }
