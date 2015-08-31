@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
-import static java.lang.System.*;
-
 /**
  * Created by lin8x_000 on 2015-08-30.
  */

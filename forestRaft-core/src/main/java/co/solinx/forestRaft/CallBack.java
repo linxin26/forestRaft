@@ -10,16 +10,20 @@ public class CallBack {
 
     Logger logger= LoggerFactory.getLogger(CallBack.class);
 
-    ICallBack callBack;
+    private ICallBack callBack;
+    private RaftContext cxt;
+    private DeadlineTimer timer;
 
-    public void setCallBack(ICallBack call){
+    public void setCallBack(ICallBack call,RaftContext context,DeadlineTimer timer){
         this.callBack=call;
+        this.cxt=context;
+        this.timer=timer;
     }
 
 
     public void run(Object msg){
-        callBack.run();
-        logger.info("result {}",msg);
+            callBack.run();
+
     }
 
 }

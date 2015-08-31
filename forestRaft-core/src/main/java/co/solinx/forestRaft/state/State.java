@@ -1,5 +1,6 @@
 package co.solinx.forestRaft.state;
 
+import co.solinx.forestRaft.DeadlineTimer;
 import co.solinx.forestRaft.RaftContext;
 
 /**

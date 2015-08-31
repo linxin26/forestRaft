@@ -45,21 +45,11 @@ public class RaftClient {
     }
 
     public void voteRequest(RaftLog log){
-
         for (int i = 0; i <client.length; i++) {
-            logger.info("client {}  {}",i,client[i]);
             if(client[i]!=null){
                 logger.info("client {} vote request term {}",i,log.curentTerm());
-            this.open(null);
-
-//            output[i] = new DataOutputStream(socket[i].getOutputStream());
-//            input[i]=new DataInputStream(socket[i].getInputStream());
-//            output[i].writeByte(1);
-//            output[i].writeUTF(String.valueOf(log.curentTerm()));
-                client[i].send("1"+","+String.valueOf(log.curentTerm()));
-//            logger.info("current server {}  remote {}  vote result {}", name, socket[i].getRemoteSocketAddress(), input[i].readUTF());
-//            input[i].close();
-//            output[i].close();
+//               this.open(null);
+                client[i].send("vote"+","+String.valueOf(log.curentTerm()));
             }
         }
     }
@@ -73,11 +63,11 @@ public class RaftClient {
         }
     }
 
-    public void request(Raft.StateType stateType){
+    public void request(Raft.StateType stateType, long term){
     for (int i = 0; i <client.length; i++) {
         logger.info("client value {}",client[i]);
         if(client[i]!=null){
-            client[i].send("0"+","+stateType.toString());
+            client[i].send("0"+","+stateType.toString()+","+term);
         }}
     }
 

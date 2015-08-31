@@ -1,9 +1,7 @@
 package co.solinx.forestRaft.state;
 
 import co.solinx.forestRaft.Raft;
-import co.solinx.forestRaft.RaftClient;
 import co.solinx.forestRaft.RaftContext;
-import co.solinx.forestRaft.RaftServer;
 import co.solinx.forestRaft.log.RaftLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +26,7 @@ public class Start implements State{
 
     public void init(RaftContext context) {
         cxt=context;
-        context.setState(Raft.StateType.FOLLOWER,null);
-//        startServer();
-    }
-
-    public void requestNote(){
-
+        context.setState(Raft.StateType.FOLLOWER,null, null);
     }
 
 

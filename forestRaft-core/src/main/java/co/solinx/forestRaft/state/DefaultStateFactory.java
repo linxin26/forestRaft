@@ -1,5 +1,6 @@
 package co.solinx.forestRaft.state;
 
+import co.solinx.forestRaft.DeadlineTimer;
 import co.solinx.forestRaft.Raft;
 import co.solinx.forestRaft.RaftClient;
 import co.solinx.forestRaft.log.RaftLog;
@@ -15,7 +16,7 @@ public class DefaultStateFactory implements StateFactory{
         this.log=log;
     }
 
-    public State makeState(Raft.StateType stateType,RaftClient client) {
+    public State makeState(Raft.StateType stateType, RaftClient client, DeadlineTimer timer) {
         State state = null;
         switch(stateType){
             case START:
@@ -28,7 +29,7 @@ public class DefaultStateFactory implements StateFactory{
                 state=new Leader();
                 break;
             case CANDIDATE:
-                state=new Candidate(log,client);
+                state=new Candidate(log,client,timer);
                 break;
         }
         return state;

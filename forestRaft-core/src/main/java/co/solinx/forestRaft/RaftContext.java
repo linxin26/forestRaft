@@ -28,12 +28,12 @@ public class RaftContext implements Raft{
     }
 
     public void init() {
-        setState(StateType.START,null);
+        setState(StateType.START,null, null);
     }
 
-    public void setState(StateType stateType,RaftClient client) {
+    public void setState(StateType stateType, RaftClient client, DeadlineTimer timer) {
         this.stateType = stateType;
-        this. state= stateFactory.makeState(stateType,client);
+        this. state= stateFactory.makeState(stateType,client,timer);
         state.init(this);
     }
 

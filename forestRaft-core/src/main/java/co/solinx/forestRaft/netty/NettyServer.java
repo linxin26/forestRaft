@@ -1,5 +1,6 @@
 package co.solinx.forestRaft.netty;
 
+import co.solinx.forestRaft.CallBack;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -26,7 +27,7 @@ public class NettyServer {
 
     private ServerBootstrap server;
 
-    public void open(String address,int port){
+    public void open(String address, int port, CallBack callBack){
         server=new ServerBootstrap();
         EventLoopGroup boosGroup=new NioEventLoopGroup();
         EventLoopGroup workerGroup=new NioEventLoopGroup();
@@ -37,7 +38,7 @@ public class NettyServer {
             protected void initChannel(SocketChannel sc) throws Exception {
                 sc.pipeline().addLast(new StringDecoder());
                 sc.pipeline().addLast(new StringEncoder());
-                sc.pipeline().addLast(new ServiceHandler());
+                sc.pipeline().addLast(new ServiceHandler(callBack));
             }
         });
         server.bind(new InetSocketAddress(address, port));

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class DeadlineTimer {
 
     Logger logger= LoggerFactory.getLogger(DeadlineTimer.class);
-    private ScheduledThreadPoolExecutor scheduler=new ScheduledThreadPoolExecutor(2);
+    private ScheduledThreadPoolExecutor scheduler=new ScheduledThreadPoolExecutor(20);
     private Raft.StateType state;
 
     public DeadlineTimer(Raft.StateType stateType) {
@@ -32,11 +32,18 @@ public class DeadlineTimer {
 
     public void start(Runnable runnable){
 //        scheduler.scheduleAtFixedRate(runnable,2000,10000+new Random().nextInt(2000),TimeUnit.MILLISECONDS);
-        scheduler.scheduleAtFixedRate(runnable,5000,10000,TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(runnable,5000+new Random().nextInt(3000),8000+new Random().nextInt(3000),TimeUnit.MILLISECONDS);
+
     }
 
     public void cancel(){
         scheduler.shutdown();
+    }
+
+    public void restart(Runnable runnable){
+        scheduler.shutdown();
+        scheduler=new ScheduledThreadPoolExecutor(20);
+        scheduler.scheduleAtFixedRate(runnable, 5000+new Random().nextInt(3000), 8000 + new Random().nextInt(3000), TimeUnit.MILLISECONDS);
     }
 
 }
