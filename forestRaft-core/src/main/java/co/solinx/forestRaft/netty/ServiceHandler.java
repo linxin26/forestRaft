@@ -23,6 +23,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }else if(msg.toString().split(",")[0].equals("1")){
             ctx.writeAndFlush("Ok"+msg.toString().split(",")[1]);
         }else if(msg.toString().split(",")[0].equals("2")){
+            logger.info("{} {}",msg,RaftContext.getStateType());
             if(RaftContext.getStateType()== Raft.StateType.LEADER) {
                 ctx.writeAndFlush("leader,1");
             }else{

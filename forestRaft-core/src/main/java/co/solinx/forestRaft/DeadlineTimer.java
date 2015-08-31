@@ -31,7 +31,8 @@ public class DeadlineTimer {
     }
 
     public void start(Runnable runnable){
-        scheduler.scheduleAtFixedRate(runnable,2000,10000+new Random().nextInt(2000),TimeUnit.MILLISECONDS);
+//        scheduler.scheduleAtFixedRate(runnable,2000,10000+new Random().nextInt(2000),TimeUnit.MILLISECONDS);
+        scheduler.scheduleAtFixedRate(runnable,5000,10000,TimeUnit.MILLISECONDS);
     }
 
     public void cancel(){

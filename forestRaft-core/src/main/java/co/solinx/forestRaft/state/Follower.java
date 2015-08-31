@@ -18,50 +18,49 @@ public class Follower implements State{
 
     public void init(RaftContext context) {
         cxt=context;
-        logger.info("follower");
          client=new RaftClient(cxt.getServers(),cxt.getName());
         startServer();
-        System.out.println("timer  ---");
+        this.getNodeState(cxt);
+    }
+
+    public void getNodeState(RaftContext cxt){
         DeadlineTimer timer=new DeadlineTimer(Raft.StateType.FOLLOWER);
+        CallBack callBack=new CallBack();
+        callBack.setCallBack(()->{
+            String result =ClientHandler.getResult();
+            if (result != null) {
+                System.out.println(result);
+                if ("follower".equals(result)) {
+                    timer.cancel();
+                    cxt.setState(Raft.StateType.CANDIDATE, client);
+                }
+            }
+        });
+
         timer.start(() -> {
             try {
-                requestNote();
-                String result =ClientHandler.getResult();
-                if (result != null) {
-                    System.out.println(result);
-                    if ("follower".equals(result)) {
-                        timer.cancel();
-                        context.setState(Raft.StateType.CANDIDATE, client);
-                    }
-
-
-
-
-                }
-            }catch (Exception e){
+                requestNote(callBack);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
-    public void startServer(){
 
+
+    public void startServer(){
         Thread thread=new Thread(()-> {
-                logger.info("startServer");
                 String serverAdd= cxt.getServers()[0];
                 String add=serverAdd.toString().split(":")[0];
                 int port = Integer.parseInt(serverAdd.toString().split(":")[1]);
                 NettyServer server =new NettyServer();
                 server.open(add,port);
-//                RaftServer server=new RaftServer(cxt.getName(),port,add);
         });
         thread.start();
     }
 
-    public String requestNote(){
-        System.out.println("requestNote");
-        client.open();
-        String result= client.request(Raft.StateType.FOLLOWER);
-        return result;
+    public void requestNote(CallBack callBack){
+        client.open(callBack);
+    client.request(Raft.StateType.FOLLOWER);
     }
 
 }

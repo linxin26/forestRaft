@@ -1,5 +1,6 @@
 package co.solinx.forestRaft.netty;
 
+import co.solinx.forestRaft.CallBack;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
+import static java.lang.System.*;
+
 /**
  * Created by lin8x_000 on 2015-08-30.
  */
@@ -27,9 +30,11 @@ public class NettyClient {
     private int port;
     private Channel channel;
 
-    public void open(String address, int port) {
+    public void open(String address, int port, CallBack callBack) {
+
         this.address = address;
         this.port = port;
+        bootstrap=null;
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap.group(eventLoopGroup);
@@ -39,13 +44,14 @@ public class NettyClient {
             protected void initChannel(SocketChannel sc) throws Exception {
                 sc.pipeline().addLast(new StringEncoder());
                 sc.pipeline().addLast(new StringDecoder());
-                sc.pipeline().addLast(new ClientHandler());
+                sc.pipeline().addLast(new ClientHandler(callBack));
             }
         });
 
     }
 
-    public void connect() {
+    public boolean connect() {
+
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(address, port));
         while (true) {
             if (future.isDone()) {
@@ -55,7 +61,7 @@ public class NettyClient {
         logger.info("{} end-------done:{} {} ", port, future.isDone(), future.isSuccess());
 
         this.channel = future.channel();
-
+        return future.isSuccess();
     }
 
     public void send(Object object) {
