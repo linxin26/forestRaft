@@ -11,8 +11,8 @@ import com.sun.corba.se.spi.activation.Server;
 public class Test {
 
     public static void main(String[] args){
-        String[] server=new String[]{"127.0.0.1:21081","127.0.0.1:21082","127.0.0.1:21083"};
-//        String[] server=new String[]{"127.0.0.1:21082","127.0.0.1:21081","127.0.0.1:21083"};
+//        String[] server=new String[]{"127.0.0.1:21081","127.0.0.1:21082","127.0.0.1:21083"};
+        String[] server=new String[]{"127.0.0.1:21082","127.0.0.1:21081","127.0.0.1:21083"};
 //        String[] server=new String[]{"127.0.0.1:21083","127.0.0.1:21081","127.0.0.1:21082"};
         RaftContext start=new RaftContext("server2",new DefaultStateFactory(new RaftLog()),server);
         start.init();

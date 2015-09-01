@@ -3,8 +3,20 @@ package co.solinx.forestRaft.state;
 import co.solinx.forestRaft.*;
 import co.solinx.forestRaft.log.RaftLog;
 import co.solinx.forestRaft.netty.NettyServer;
+import org.jetlang.core.Scheduler;
+import org.jetlang.core.SchedulerImpl;
+import org.jetlang.fibers.Fiber;
+import org.jetlang.fibers.FiberStub;
+import org.jetlang.fibers.PoolFiberFactory;
+import org.jetlang.fibers.ThreadFiber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by linx on 2015/8/28.
@@ -17,29 +29,34 @@ public class Follower implements State{
     private RaftClient client;
     private RaftLog log;
     private DeadlineTimer timer;
-
+    private Timer timers;
+//    private long timeout=20000+new Random(10000).nextInt(10000);
+    int timeout = new Random().nextInt(35000)%(35000 - 23000 + 1) + 23000+(new Random().nextInt(7000 - 4000 + 1) + 4000);
     public void init(RaftContext context) {
         log=new RaftLog();
         cxt=context;
-        this.timer =new DeadlineTimer(Raft.StateType.FOLLOWER);
          client=new RaftClient(cxt.getServers(),cxt.getName());
-        startServer();
+        timer=new DeadlineTimer(timeout);
         timer();
+        startServer();
+
     }
 
     public void timer(){
-        timer.start(() -> {
-            logger.info("follower 切换为 candidate");
-            cxt.setState(Raft.StateType.CANDIDATE, client, timer);
+        timer.start(new TimerTask() {
+            @Override
+            public void run() {
+                logger.info("follower 切换为 candidate");
+                cxt.setState(Raft.StateType.CANDIDATE, client, timer);
+            }
         });
     }
 
     public void startServer(){
         CallBack callBack=new CallBack();
         callBack.setCallBack(()->{
-            timer.restart(()->{logger.info("follower重置时间");
-                cxt.setState(Raft.StateType.CANDIDATE, client, timer);
-            });
+            //接收到投票请求后重置定时器
+            timer.reset();
         },null,null);
 
         Thread thread=new Thread(()-> {

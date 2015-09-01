@@ -54,21 +54,14 @@ public class RaftClient {
         }
     }
 
-    public void getState(CallBack callback){
-        for (int i = 0; i <client.length; i++) {
+
+    public void heartBeat(){
+        for (int i = 0; i < client.length; i++) {
             if(client[i]!=null){
-                this.open(callback);
-                client[i].send("2,2");
+                logger.info("发送心跳。");
+                client[i].send("heartBeat");
             }
         }
-    }
-
-    public void request(Raft.StateType stateType, long term){
-    for (int i = 0; i <client.length; i++) {
-        logger.info("client value {}",client[i]);
-        if(client[i]!=null){
-            client[i].send("0"+","+stateType.toString()+","+term);
-        }}
     }
 
 

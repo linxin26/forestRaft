@@ -3,6 +3,7 @@ package co.solinx.forestRaft.state;
 import co.solinx.forestRaft.*;
 import co.solinx.forestRaft.log.RaftLog;
 import co.solinx.forestRaft.netty.ClientHandler;
+import org.jetlang.fibers.FiberStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +32,12 @@ public class Candidate implements State {
 
     public void sendVoteRequest() {
         logger.info("开始投票 vote {}", log.curentTerm());
-        DeadlineTimer timer = new DeadlineTimer(Raft.StateType.CANDIDATE);
         CallBack callback=new CallBack();
         callback.setCallBack(() -> {
             logger.info(" callback {}", ClientHandler.getResultMap());
-//            if (ClientHandler.getResultMap().size() == (cxt.getServers().length - 1)) {
-                logger.info("已选出 Leader ");
-//                timer.cancel();
-               timer.cancel();
-                cxt.setState(Raft.StateType.LEADER, client, timer);
-//            }
+            logger.info("已选出 Leader ");
+            timer.cancel();
+            cxt.setState(Raft.StateType.LEADER, client, timer);
         }, cxt, timer);
             try {
                 client.open(callback);

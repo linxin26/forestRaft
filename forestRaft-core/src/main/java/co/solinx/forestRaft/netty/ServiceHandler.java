@@ -30,8 +30,15 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         logger.info(" {} {}", ctx.channel().remoteAddress(), msg);
          if(!RaftContext.getStateType().equals(Raft.StateType.LEADER)&&msg.toString().indexOf("vote")!=-1){
              logger.info("j接收到请求投票");
+             if(callBack!=null) {
+                 callBack.run(msg);
+             }
              ctx.writeAndFlush("ok");
-             callBack.run(msg);
+         }else if(msg.toString().indexOf("heartBeat")!=-1){
+             logger.info("leader heartBeat。。。");
+             if(callBack!=null){
+                 callBack.run(msg);
+             }
          }
     }
 

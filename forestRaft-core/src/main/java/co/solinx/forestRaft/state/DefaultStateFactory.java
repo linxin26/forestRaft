@@ -26,7 +26,7 @@ public class DefaultStateFactory implements StateFactory{
                 state=new Follower();
                 break;
             case LEADER:
-                state=new Leader();
+                state=new Leader(client);
                 break;
             case CANDIDATE:
                 state=new Candidate(log,client,timer);

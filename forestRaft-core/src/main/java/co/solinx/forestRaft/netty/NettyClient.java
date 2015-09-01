@@ -56,7 +56,7 @@ public class NettyClient {
                 break;
             }
         }
-        logger.info("{} end-------done:{} {} ", port, future.isDone(), future.isSuccess());
+        logger.info("connect: {} done: {}-------isSuccess: {} ", port, future.isDone(), future.isSuccess());
 
         this.channel = future.channel();
         return future.isSuccess();
