@@ -10,26 +10,23 @@ import co.solinx.forestRaft.log.RaftLog;
  */
 public class DefaultStateFactory implements StateFactory{
 
-    RaftLog log;
-
-    public DefaultStateFactory(RaftLog log) {
-        this.log=log;
+    public DefaultStateFactory() {
     }
 
-    public State makeState(Raft.StateType stateType, RaftClient client, DeadlineTimer timer) {
+    public State makeState(Raft.StateType stateType, RaftClient client, DeadlineTimer timer,RaftLog log) {
         State state = null;
         switch(stateType){
             case START:
                 state=new Start(log);
                 break;
             case FOLLOWER:
-                state=new Follower();
+                state=new Follower(log);
                 break;
             case LEADER:
                 state=new Leader(client);
                 break;
             case CANDIDATE:
-                state=new Candidate(log,client,timer);
+                state=new Candidate(log,client,new DeadlineTimer(2000));
                 break;
         }
         return state;

@@ -1,6 +1,7 @@
 package co.solinx.forestRaft.netty;
 
 import co.solinx.forestRaft.CallBack;
+import co.solinx.forestRaft.log.RaftLog;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -26,6 +27,12 @@ public class NettyServer {
     Logger logger= LoggerFactory.getLogger(NettyServer.class);
 
     private ServerBootstrap server;
+    private RaftLog log;
+
+
+    public NettyServer(RaftLog log) {
+        this.log = log;
+    }
 
     public void open(String address, int port, CallBack callBack){
         server=new ServerBootstrap();
@@ -38,7 +45,7 @@ public class NettyServer {
             protected void initChannel(SocketChannel sc) throws Exception {
                 sc.pipeline().addLast(new StringDecoder());
                 sc.pipeline().addLast(new StringEncoder());
-                sc.pipeline().addLast(new ServiceHandler(callBack));
+                sc.pipeline().addLast(new ServiceHandler(callBack,log));
             }
         });
         server.bind(new InetSocketAddress(address, port));

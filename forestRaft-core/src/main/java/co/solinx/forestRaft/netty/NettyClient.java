@@ -32,7 +32,7 @@ public class NettyClient {
 
         this.address = address;
         this.port = port;
-        bootstrap=null;
+        bootstrap = null;
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap.group(eventLoopGroup);
@@ -63,7 +63,9 @@ public class NettyClient {
     }
 
     public void send(Object object) {
-        this.channel.writeAndFlush(object);
+        if (this.channel != null) {
+            this.channel.writeAndFlush(object);
+        }
     }
 
 }

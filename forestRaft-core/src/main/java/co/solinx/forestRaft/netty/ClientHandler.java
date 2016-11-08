@@ -27,12 +27,12 @@ public class ClientHandler  extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        logger.info("{} {}",msg,ctx.channel().remoteAddress());
-        if(msg.toString().indexOf("ok")!=-1) {
+        logger.info("channelRead {} {}",msg,ctx.channel().remoteAddress(),msg);
+        //if(msg.toString().indexOf("ok")!=-1) {
             resultMap.put(ctx.channel().remoteAddress().toString().split(":")[1], (String) msg);
             if(callBack!=null)
               callBack.run(msg);
-        }
+        //}
     }
 
     @Override

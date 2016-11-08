@@ -21,51 +21,57 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * Created by linx on 2015/8/28.
  */
-public class Follower implements State{
+public class Follower implements State {
 
-    private Logger logger= LoggerFactory.getLogger(Follower.class);
+    private Logger logger = LoggerFactory.getLogger(Follower.class);
 
     private RaftContext cxt;
     private RaftClient client;
     private RaftLog log;
     private DeadlineTimer timer;
     private Timer timers;
-//    private long timeout=20000+new Random(10000).nextInt(10000);
-    int timeout = new Random().nextInt(35000)%(35000 - 23000 + 1) + 23000+(new Random().nextInt(7000 - 4000 + 1) + 4000);
+    //    private long timeout=20000+new Random(10000).nextInt(10000);
+    int timeout = new Random().nextInt(35000) % (35000 - 23000 + 1) + 23000 + (new Random().nextInt(7000 - 4000 + 1) + 4000);
+
+    public Follower(RaftLog log) {
+        this.log = log;
+    }
+
     public void init(RaftContext context) {
-        log=new RaftLog();
-        cxt=context;
-         client=new RaftClient(cxt.getServers(),cxt.getName());
-        timer=new DeadlineTimer(timeout);
+        cxt = context;
+        client = new RaftClient(cxt.getServers(), cxt.getName());
+        timer = new DeadlineTimer(timeout);
         timer();
         startServer();
 
     }
 
-    public void timer(){
+    public void timer() {
         timer.start(new TimerTask() {
             @Override
             public void run() {
                 logger.info("follower 切换为 candidate");
                 cxt.setState(Raft.StateType.CANDIDATE, client, timer);
+                timer.cancel();
             }
         });
     }
 
-    public void startServer(){
-        CallBack callBack=new CallBack();
-        callBack.setCallBack(()->{
+    public void startServer() {
+        CallBack callBack = new CallBack();
+        callBack.setCallBack(() -> {
             //接收到投票请求后重置定时器
             timer.reset();
-        },null,null);
+            logger.info("当前Term {}", log.curentTerm());
+        }, null, null);
 
-        Thread thread=new Thread(()-> {
-            String serverAdd= cxt.getServers()[0];
-            String add=serverAdd.toString().split(":")[0];
+        Thread thread = new Thread(() -> {
+            String serverAdd = cxt.getServers()[0];
+            String add = serverAdd.toString().split(":")[0];
             int port = Integer.parseInt(serverAdd.toString().split(":")[1]);
 
-            NettyServer server =new NettyServer();
-            server.open(add,port,callBack);
+            NettyServer server = new NettyServer(log);
+            server.open(add, port, callBack);
         });
         logger.info("server 启动");
         thread.start();

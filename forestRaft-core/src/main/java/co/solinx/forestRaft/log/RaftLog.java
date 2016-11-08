@@ -10,6 +10,13 @@ public class RaftLog {
 
     Logger loggerFactory= LoggerFactory.getLogger(RaftLog.class);
     private long term;
+    private String name;
+
+
+    public RaftLog(String name) {
+        this.name = name;
+        this.term=0;
+    }
 
     public void load(){
         loggerFactory.info("load init ");
@@ -24,6 +31,10 @@ public class RaftLog {
 
     public long newTerm(){
         return term++;
+    }
+
+    public void setTerm(long term){
+        this.term=term;
     }
 
 }

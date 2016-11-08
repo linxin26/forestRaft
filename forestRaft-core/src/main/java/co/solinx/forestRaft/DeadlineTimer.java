@@ -43,8 +43,10 @@ public class DeadlineTimer {
     }
 
     public void start(Runnable runnable){
+        logger.debug("timer start....");
         this.scheduler=runnable;
-        timer.scheduleWithFixedDelay(runnable,15000,15000, TimeUnit.MILLISECONDS);
+        timer.scheduleAtFixedRate(runnable,15000,15000, TimeUnit.MILLISECONDS);
+        logger.debug("timer start....end ");
     }
 
 //    public void start(Runnable runnable){
@@ -53,6 +55,7 @@ public class DeadlineTimer {
 //    }
 
     public void cancel(){
+        logger.debug("timer shutdown");
         timer.shutdown();
     }
 

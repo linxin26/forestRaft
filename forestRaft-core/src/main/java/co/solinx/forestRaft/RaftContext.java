@@ -13,18 +13,19 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class RaftContext implements Raft{
 
-    private RaftLog log=new RaftLog();
     private State state;
     private static StateType stateType;
     private String name;
    private  StateFactory stateFactory;
     private Set<StateTransitionListener> listeners=new ConcurrentSkipListSet<>();
     private String[] servers;
+    private RaftLog log;
 
     public RaftContext(String name, StateFactory stateFactory,String[] server) {
         this.name = name;
         this.stateFactory = stateFactory;
         servers=server;
+        log =new RaftLog(name);
     }
 
     public void init() {
@@ -33,7 +34,7 @@ public class RaftContext implements Raft{
 
     public void setState(StateType stateType, RaftClient client, DeadlineTimer timer) {
         this.stateType = stateType;
-        this. state= stateFactory.makeState(stateType,client,timer);
+        this. state= stateFactory.makeState(stateType,client,timer,log);
         state.init(this);
     }
 

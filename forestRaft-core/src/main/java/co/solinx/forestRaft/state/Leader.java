@@ -36,8 +36,8 @@ public class Leader implements State{
         callBack.setCallBack(() -> {
 
         }, null, null);
+        client.open(callBack);
         timer.start(() -> {
-            client.open(callBack);
             client.heartBeat();
         });
 

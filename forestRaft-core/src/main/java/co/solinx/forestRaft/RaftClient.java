@@ -21,6 +21,7 @@ public class RaftClient {
     DataInputStream[] input;
     DataOutputStream[] output;
     NettyClient client[];
+    private CallBack callBack;
 
     public RaftClient(String[] servers,String name) {
         serverNote=servers;
@@ -42,20 +43,35 @@ public class RaftClient {
                 client[i]=null;
             }
         }
+        this.callBack=callBack;
+    }
+
+    public void checkConnect(CallBack callBack){
+        for (int i = 0; i < serverNote.length-1; i++) {
+            String addre=serverNote[i+1].split(":")[0];
+            int port= Integer.parseInt(serverNote[i+1].split(":")[1]);
+            if(client[i]==null||(!client[i].connect())) {
+                client[i] = new NettyClient();
+                client[i].open(addre, port, callBack);
+                logger.info("{} {} {}", addre, port, i);
+            }
+        }
     }
 
     public void voteRequest(RaftLog log){
+        checkConnect(callBack);
         for (int i = 0; i <client.length; i++) {
             if(client[i]!=null){
                 logger.info("client {} vote request term {}",i,log.curentTerm());
 //               this.open(null);
-                client[i].send("vote"+","+String.valueOf(log.curentTerm()));
+                client[i].send(name+","+String.valueOf(log.curentTerm()));
             }
         }
     }
 
 
     public void heartBeat(){
+        checkConnect(callBack);
         for (int i = 0; i < client.length; i++) {
             if(client[i]!=null){
                 logger.info("发送心跳。");
