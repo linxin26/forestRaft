@@ -14,7 +14,7 @@ import java.net.Socket;
  */
 public class RaftClient {
 
-    Logger logger= LoggerFactory.getLogger(RaftClient.class);
+    Logger logger = LoggerFactory.getLogger(RaftClient.class);
     String[] serverNote;
     String name;
     Socket[] socket;
@@ -23,34 +23,35 @@ public class RaftClient {
     NettyClient client[];
     private CallBack callBack;
 
-    public RaftClient(String[] servers,String name) {
-        serverNote=servers;
-        this.name=name;
+    public RaftClient(String[] servers, String name) {
+        serverNote = servers;
+        this.name = name;
 
 
     }
 
-    public void open(CallBack callBack){
-        socket=new Socket[serverNote.length-1];
-        client=new NettyClient[serverNote.length-1];
-        for (int i = 0; i < serverNote.length-1; i++) {
-            String addre=serverNote[i+1].split(":")[0];
-            int port= Integer.parseInt(serverNote[i+1].split(":")[1]);
-            client[i]=new NettyClient();
-            client[i].open(addre,port,callBack);
-            logger.info("{} {} {}",addre,port,i);
-            if(!client[i].connect()){
-                client[i]=null;
+    public void open(CallBack callBack) {
+        socket = new Socket[serverNote.length - 1];
+        client = new NettyClient[serverNote.length - 1];
+        for (int i = 0; i < serverNote.length - 1; i++) {
+            String addre = serverNote[i + 1].split(":")[0];
+            int port = Integer.parseInt(serverNote[i + 1].split(":")[1]);
+            client[i] = new NettyClient();
+            client[i].open(addre, port, callBack);
+            logger.info("{} {} {}", addre, port, i);
+            if (!client[i].connect()) {
+                client[i] = null;
             }
         }
-        this.callBack=callBack;
+        this.callBack = callBack;
     }
 
-    public void checkConnect(CallBack callBack){
-        for (int i = 0; i < serverNote.length-1; i++) {
-            String addre=serverNote[i+1].split(":")[0];
-            int port= Integer.parseInt(serverNote[i+1].split(":")[1]);
+    public void checkConnect(CallBack callBack) {
+        for (int i = 0; i < serverNote.length - 1; i++) {
+            String addre = serverNote[i + 1].split(":")[0];
+            int port = Integer.parseInt(serverNote[i + 1].split(":")[1]);
             if(client[i]==null||(!client[i].connect())) {
+//            if (client[i] == null || (!client[i].isStatus())) {
                 client[i] = new NettyClient();
                 client[i].open(addre, port, callBack);
                 logger.info("{} {} {}", addre, port, i);
@@ -58,22 +59,22 @@ public class RaftClient {
         }
     }
 
-    public void voteRequest(RaftLog log){
+    public void voteRequest(RaftLog log) {
         checkConnect(callBack);
-        for (int i = 0; i <client.length; i++) {
-            if(client[i]!=null){
-                logger.info("client {} vote request term {}",i,log.curentTerm());
+        for (int i = 0; i < client.length; i++) {
+            if (client[i] != null) {
+                logger.info("client {} vote request term {}", i, log.curentTerm());
 //               this.open(null);
-                client[i].send(name+","+String.valueOf(log.curentTerm()));
+                client[i].send(name + "," + String.valueOf(log.curentTerm()));
             }
         }
     }
 
 
-    public void heartBeat(){
+    public void heartBeat() {
         checkConnect(callBack);
         for (int i = 0; i < client.length; i++) {
-            if(client[i]!=null){
+            if (client[i] != null) {
                 logger.info("发送心跳。");
                 client[i].send("heartBeat");
             }

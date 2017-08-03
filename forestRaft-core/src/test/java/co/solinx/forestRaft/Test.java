@@ -18,7 +18,7 @@ public class Test {
 //        String[] server=new String[]{"127.0.0.1:21082","127.0.0.1:21081","127.0.0.1:21083"};
 //        String[] server=new String[]{"127.0.0.1:21083","127.0.0.1:21081","127.0.0.1:21082"};
 
-        RaftContext start=new RaftContext("server1",new DefaultStateFactory(),server);
-        start.init();
+        RaftContext start=new RaftContext("server2",new DefaultStateFactory(),server);
+        start.start();
     }
 }

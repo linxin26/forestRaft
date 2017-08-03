@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
+ * Follower状态
  * Created by linx on 2015/8/28.
  */
 public class Follower implements State {
@@ -26,20 +27,20 @@ public class Follower implements State {
     private Logger logger = LoggerFactory.getLogger(Follower.class);
 
     private RaftContext cxt;
-    private RaftClient client;
+//    private RaftClient client;
     private RaftLog log;
     private DeadlineTimer timer;
     private Timer timers;
     //    private long timeout=20000+new Random(10000).nextInt(10000);
     int timeout = new Random().nextInt(35000) % (35000 - 23000 + 1) + 23000 + (new Random().nextInt(7000 - 4000 + 1) + 4000);
 
-    public Follower(RaftLog log) {
-        this.log = log;
+    public Follower() {
     }
 
     public void init(RaftContext context) {
         cxt = context;
-        client = new RaftClient(cxt.getServers(), cxt.getName());
+        this.log=context.getLog();
+//        client = new RaftClient(cxt.getServers(), cxt.getName());
         timer = new DeadlineTimer(timeout);
         timer();
         startServer();
@@ -51,7 +52,7 @@ public class Follower implements State {
             @Override
             public void run() {
                 logger.info("follower 切换为 candidate");
-                cxt.setState(Raft.StateType.CANDIDATE, client, timer);
+                cxt.setState(Raft.StateType.CANDIDATE, timer);
                 timer.cancel();
             }
         });
@@ -70,7 +71,7 @@ public class Follower implements State {
             String add = serverAdd.toString().split(":")[0];
             int port = Integer.parseInt(serverAdd.toString().split(":")[1]);
 
-            NettyServer server = new NettyServer(log);
+            NettyServer server = new NettyServer(cxt.getLog());
             server.open(add, port, callBack);
         });
         logger.info("server 启动");

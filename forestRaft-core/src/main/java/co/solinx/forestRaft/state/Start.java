@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 /**
+ * start状态
  * Created by linx on 2015/8/28.
  */
 public class Start implements State{
@@ -17,16 +18,16 @@ public class Start implements State{
     RaftLog log;
     RaftContext cxt;
 
-    public Start(RaftLog log){
-        this.log=log;
+    public Start(){
         MDC.put("state", Raft.StateType.START.name());
-        log.load();
+
 
     }
 
     public void init(RaftContext context) {
-        cxt=context;
-        context.setState(Raft.StateType.FOLLOWER,null, null);
+        this.cxt=context;
+        cxt.getLog().load();
+        context.setState(Raft.StateType.FOLLOWER);
     }
 
 

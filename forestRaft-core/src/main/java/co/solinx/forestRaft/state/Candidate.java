@@ -16,18 +16,14 @@ public class Candidate implements State {
 
     RaftContext cxt;
     private Logger logger = LoggerFactory.getLogger(Candidate.class);
-    private RaftClient client;
     private RaftLog log;
     private DeadlineTimer timer;
 
-    public Candidate(RaftLog log, RaftClient client, DeadlineTimer timer) {
-        this.client = client;
-        this.log = log;
+    public Candidate(DeadlineTimer timer) {
         this.timer = timer;
-        this.initClient();
     }
 
-    public void initClient(){
+    public void initClient() {
         CallBack callback = new CallBack();
         callback.setCallBack(() -> {
             logger.info(" callback {}", ClientHandler.getResultMap());
@@ -35,20 +31,22 @@ public class Candidate implements State {
 
             if (term.equals("ok")) {
                 logger.info("当选为Leader ");
-                cxt.setState(Raft.StateType.LEADER, client, timer);
+                cxt.setState(Raft.StateType.LEADER, timer);
             } else {
                 logger.info("已选出 Leader ");
-                cxt.setState(Raft.StateType.FOLLOWER, client, timer);
+                cxt.setState(Raft.StateType.FOLLOWER, timer);
             }
             timer.cancel();
 
         }, cxt, timer);
-        client.open(callback);
+        this.cxt.getClient().open(callback);
     }
 
     public void init(RaftContext context) {
         logger.info("candidate init");
         this.cxt = context;
+        this.log = context.getLog();
+        this.initClient();
         timer();
     }
 
@@ -61,19 +59,19 @@ public class Candidate implements State {
                     sendVoteRequest();
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     public void sendVoteRequest() {
-        logger.info("开始投票 当前Term {}", log.curentTerm());
+        logger.info("开始投票 当前Term {}", cxt.getLog().curentTerm());
 
         try {
 
             log.newTerm();
-            client.voteRequest(log);
+            this.cxt.getClient().voteRequest(log);
 
         } catch (Exception e) {
             e.printStackTrace();

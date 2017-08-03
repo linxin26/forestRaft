@@ -13,20 +13,20 @@ public class DefaultStateFactory implements StateFactory{
     public DefaultStateFactory() {
     }
 
-    public State makeState(Raft.StateType stateType, RaftClient client, DeadlineTimer timer,RaftLog log) {
+    public State makeState(Raft.StateType stateType, DeadlineTimer timer) {
         State state = null;
         switch(stateType){
             case START:
-                state=new Start(log);
+                state=new Start();
                 break;
             case FOLLOWER:
-                state=new Follower(log);
+                state=new Follower();
                 break;
             case LEADER:
-                state=new Leader(client);
+                state=new Leader();
                 break;
             case CANDIDATE:
-                state=new Candidate(log,client,new DeadlineTimer(2000));
+                state=new Candidate(new DeadlineTimer(2000));
                 break;
         }
         return state;

@@ -9,6 +9,6 @@ public interface Raft {
         START,FOLLOWER,LEADER,CANDIDATE
     }
 
-     void init();
+     void start();
 
 }

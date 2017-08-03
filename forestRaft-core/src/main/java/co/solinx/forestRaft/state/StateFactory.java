@@ -10,7 +10,7 @@ import co.solinx.forestRaft.log.RaftLog;
  */
 public interface StateFactory {
 
-    State makeState(Raft.StateType stateType, RaftClient client, DeadlineTimer timer,RaftLog log);
+    State makeState(Raft.StateType stateType, DeadlineTimer timer);
 
     void changeState();
 

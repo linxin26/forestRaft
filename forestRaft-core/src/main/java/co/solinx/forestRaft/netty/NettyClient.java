@@ -27,6 +27,7 @@ public class NettyClient {
     private String address;
     private int port;
     private Channel channel;
+    private boolean status = false;
 
     public void open(String address, int port, CallBack callBack) {
 
@@ -53,6 +54,7 @@ public class NettyClient {
         ChannelFuture future = bootstrap.connect(new InetSocketAddress(address, port));
         while (true) {
             if (future.isDone()) {
+                status = true;
                 break;
             }
         }
@@ -68,4 +70,7 @@ public class NettyClient {
         }
     }
 
+    public boolean isStatus() {
+        return status;
+    }
 }
