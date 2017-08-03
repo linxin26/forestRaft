@@ -24,6 +24,7 @@ public class Candidate implements State {
     }
 
     public void initClient() {
+        //todo 接受到投票请求方存在没有回调到改方法的问题
         CallBack callback = new CallBack();
         callback.setCallBack(() -> {
             logger.info(" callback {}", ClientHandler.getResultMap());

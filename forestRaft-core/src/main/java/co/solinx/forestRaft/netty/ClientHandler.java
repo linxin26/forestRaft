@@ -1,8 +1,6 @@
 package co.solinx.forestRaft.netty;
 
 import co.solinx.forestRaft.CallBack;
-import co.solinx.forestRaft.Raft;
-import co.solinx.forestRaft.RaftContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;

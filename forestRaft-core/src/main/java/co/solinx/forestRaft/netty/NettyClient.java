@@ -51,17 +51,20 @@ public class NettyClient {
 
     public boolean connect() {
 
-        ChannelFuture future = bootstrap.connect(new InetSocketAddress(address, port));
-        while (true) {
-            if (future.isDone()) {
-                status = true;
-                break;
+        logger.debug("{} 连接状态,{}", this, status);
+        if(!status) {
+            ChannelFuture future = bootstrap.connect(new InetSocketAddress(address, port));
+            while (true) {
+                if (future.isDone()) {
+                    status = future.isSuccess();
+                    break;
+                }
             }
+            logger.info("connect: {} done: {}-------isSuccess: {} ", port, future.isDone(), future.isSuccess());
+                    this.channel = future.channel();
         }
-        logger.info("connect: {} done: {}-------isSuccess: {} ", port, future.isDone(), future.isSuccess());
 
-        this.channel = future.channel();
-        return future.isSuccess();
+        return status;
     }
 
     public void send(Object object) {
