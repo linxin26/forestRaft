@@ -21,11 +21,11 @@
             <artifactId>logback-classic</artifactId>
             <version>1.0.6</version>
         </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.0.27.Final</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.netty</groupId>-->
+<!--            <artifactId>netty-all</artifactId>-->
+<!--            <version>4.0.27.Final</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jetlang</groupId>
             <artifactId>jetlang</artifactId>
@@ -35,6 +35,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baidu</groupId>
+            <artifactId>brpc-java</artifactId>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 
