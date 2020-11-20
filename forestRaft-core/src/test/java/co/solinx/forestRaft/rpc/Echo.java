@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * @author linxin
  * @version v1.0
- * Copyright (c) 2015 by e_trans
  * @date 2020/11/20.
  */
 public class Echo {

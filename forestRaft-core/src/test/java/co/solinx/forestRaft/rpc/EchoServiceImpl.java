@@ -5,13 +5,18 @@ import com.baidu.brpc.protocol.BrpcMeta;
 /**
  * @author linxin
  * @version v1.0
- * Copyright (c) 2015 by e_trans
  * @date 2020/11/20.
  */
 public class EchoServiceImpl implements EchoService {
     @Override
     public void echo(String str) {
         System.out.println(str);
+    }
+
+    @Override
+    public EchoResponse echo(EchoRequest request) {
+        System.out.println(request);
+        return new EchoResponse();
     }
     /**
      * brpc/sofa：

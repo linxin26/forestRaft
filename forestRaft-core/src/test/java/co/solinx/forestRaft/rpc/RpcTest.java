@@ -10,7 +10,6 @@ import com.baidu.brpc.server.RpcServerOptions;
 /**
  * @author linxin
  * @version v1.0
- * Copyright (c) 2015 by e_trans
  * @date 2020/11/20.
  */
 public class RpcTest {
@@ -23,6 +22,6 @@ public class RpcTest {
 
         RpcClient rpcClient=new RpcClient(endpoint,options);
         EchoService  raftConsensusServiceAsync = BrpcProxy.getProxy(rpcClient, EchoService.class);
-        raftConsensusServiceAsync.echo("test");
+        System.out.println(raftConsensusServiceAsync.echo(new EchoRequest()));
     }
 }

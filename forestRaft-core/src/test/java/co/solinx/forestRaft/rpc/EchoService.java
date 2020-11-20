@@ -5,7 +5,6 @@ import com.baidu.brpc.protocol.BrpcMeta;
 /**
  * @author linxin
  * @version v1.0
- * Copyright (c) 2015 by e_trans
  * @date 2020/11/20.
  */
 public interface EchoService {
@@ -20,4 +19,7 @@ public interface EchoService {
 //    Echo.EchoResponse echo(Echo.EchoRequest request);
     @BrpcMeta(serviceName = "EchoService", methodName = "0")
     public void echo(String str);
+
+    @BrpcMeta(serviceName = "EchoService", methodName = "Echo")
+    EchoResponse echo(EchoRequest request);
 }
